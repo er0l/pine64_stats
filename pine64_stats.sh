@@ -1,4 +1,29 @@
 #!/bin/bash
+################################################################################
+#
+#  Copyright (C) 2016 Erol Tahirovic (erol@erol.name)
+#
+#  This Program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2, or (at your option)
+#  any later version.
+#
+#  This Program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+# Simple utility to monitor Pine64 statistics
+#
+# Usage:
+#
+#   ./pine64_stats.sh
+#
+
 # Reset
 Color_Off='\033[0m'       # Text Reset
 
@@ -11,11 +36,14 @@ Blue='\033[0;34m'         # Blue
 Purple='\033[0;35m'       # Purple
 Cyan='\033[0;36m'         # Cyan
 White='\033[0;37m'        # White
+
 echo -e "Press [CTRL+C] to stop..\n"
 high=`cat /sys/devices/virtual/thermal/thermal_zone0/temp`
+
 sep="Time\t\tARM\t\tGovernor\tTemperature\t(Max)\n"
 sep+="==============\t=============\t=============\t==============\t==============\n"
 echo -e $sep 
+
 i=0
 while :
 do
@@ -65,7 +93,6 @@ do
 	else
 		temp="$Green$temp"C"$Color_Off"
 	fi
-
 
 	echo -e "$now\t$mhz\t $gov\t \t $temp\t\t($top)" 
 	i=$((i+1))
