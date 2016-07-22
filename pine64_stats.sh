@@ -37,6 +37,8 @@ Purple='\033[0;35m'       # Purple
 Cyan='\033[0;36m'         # Cyan
 White='\033[0;37m'        # White
 
+tabs 4
+
 function check_temp {
 	t=$1
 	if [ $t -ge 55 ]; then
@@ -53,8 +55,8 @@ function check_temp {
 
 echo -e "Press [CTRL+C] to stop..\n"
 high=`cat /sys/devices/virtual/thermal/thermal_zone0/temp`
-sep="Time\t\tARM\t\tGovernor\tTemperature\t(Max)\n"
-sep+="==============\t=============\t=============\t==============\t==============\n"
+sep="Cur.Time\tARM freq.\tGovernor\t\tTemp/Max\tMemory MB %\t\t\tCpu Load\n"
+sep+="==========\t===========\t=============\t===========\t=================\t=========\n"
 echo -e $sep 
 i=0
 while :
@@ -88,12 +90,22 @@ do
 	fi
 	top=$(check_temp $high)
 	temp=$(check_temp $temp)
-
-	echo -e "$now\t$mhz\t $gov\t \t $temp\t\t($top)" 
+	memp=`free -m | awk 'NR==2{printf "%.2f", $3*100/$2 }'`
+	memb=`free -m | awk 'NR==2{printf "%s/%s", $3,$2 }'`
+	if (( $(echo "$memp > "80"" |bc -l) )); then
+		if (( $(echo "$memp > "90"" |bc -l) )); then
+			memp="$Red$memp%$Color_Off"
+		fi
+	else
+		memp="$Yellow$memp%$Color_Off"
+	fi
+	memory="$memb $memp"
+	load=`top -bn1 | grep load | awk '{printf "%.2f\n", $(NF-2)}'` 
+	echo -e "$now\t$mhz\t$gov \t$temp/$top\t\t$memory\t$load" 
 	i=$((i+1))
 	if [ $i -ge 20 ]; then
 		echo -e "\n";
-		echo -e $sep;
+		echo -e "$sep";
 		i=0;
 	fi
 	sleep 2
