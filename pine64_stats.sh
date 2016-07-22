@@ -95,13 +95,13 @@ do
 	if (( $(echo "$memp > "80"" |bc -l) )); then
 		if (( $(echo "$memp > "90"" |bc -l) )); then
 			memp="$Red$memp%$Color_Off"
+		else
+			memp="$Yellow$memp%$Color_Off"
 		fi
-	else
-		memp="$Yellow$memp%$Color_Off"
 	fi
 	memory="$memb $memp"
 	load=`top -bn1 | grep load | awk '{printf "%.2f\n", $(NF-2)}'` 
-	echo -e "$now\t$mhz\t$gov \t$temp/$top\t\t$memory\t$load" 
+	echo -e "$now\t$mhz\t$gov \t$temp/$top\t\t$memory\t\t$load" 
 	i=$((i+1))
 	if [ $i -ge 20 ]; then
 		echo -e "\n";
